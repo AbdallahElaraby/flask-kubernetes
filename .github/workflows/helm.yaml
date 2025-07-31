@@ -91,7 +91,7 @@ jobs:
 
 
     - name: Deploy manifests
-      run: helm install mychart ./helm/mychart
+      run: helm upgrade --install mychart ./helm/mychart
       env:
         KUBECONFIG: ./k8s/ifconfig.yaml
     - name: Fetch Kubernetes Cluster Details after deployment
