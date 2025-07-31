@@ -8,7 +8,7 @@ on:
 env:
   CONTAINER_REGISTRY: "${{vars.CONTAINER_REGISTERY }}"
   DOCKER_USERNAME: "${{ vars.DOCKER_USERNAME }}"
-  IMAGE_NAME: flask-application
+  IMAGE_NAME: "flask-application"
 
 jobs:
   docker:
