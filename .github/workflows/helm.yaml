@@ -115,7 +115,6 @@ jobs:
             kubectl get deployments --namespace ${{ vars.NAMESPACE }}
             kubectl logs --namespace ${{ vars.NAMESPACE }} flask-app-569679f5c7-dd8x9
             kubectl describe pod --namespace ${{ vars.NAMESPACE }} flask-app-569679f5c7-dd8x9
-            curl http://10.0.91.49:5000
             curl http://10.224.0.5:30089
       continue-on-error: true
       env:
