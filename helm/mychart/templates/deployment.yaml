@@ -8,11 +8,11 @@ metadata:
   {{- end }}
   namespace: AbdallahElarabyhelm
 spec:
-  replicas: {{.Values.replicaCount}}
+  replicas: {{ .Values.replicaCount }}
   {{- if .Values.labelsenable }}
   selector:
     matchLabels:
-      app: {.{Values.mylabel}}
+      app: {{.Values.mylabel}}
   {{- end }}
   template:
     metadata:
