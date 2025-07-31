@@ -115,7 +115,9 @@ jobs:
             kubectl get deployments --namespace ${{ vars.NAMESPACE }}
             kubectl logs --namespace ${{ vars.NAMESPACE }} flask-app-569679f5c7-dd8x9
             kubectl describe pod --namespace ${{ vars.NAMESPACE }} flask-app-569679f5c7-dd8x9
-            curl http://10.224.0.5:30089
+            kubectl port-forward svc/flask-app-service 5000:5000 --namespace ${{ vars.NAMESPACE }} &
+            sleep 5
+            curl http://localhost:5000
       continue-on-error: true
       env:
         KUBECONFIG: ./k8s/ifconfig.yaml
