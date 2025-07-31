@@ -80,11 +80,11 @@ jobs:
     - name: update helm tag
       shell: bash
       run: |
-            grep -A 3 '^image:' helm/mychart/values.yaml 
+            head -n 15 helm/mychart/values.yaml 
             sed -i "s|^\([[:space:]]*repository:\).*|\1 ${CONTAINER_REGISTRY}/${DOCKER_USERNAME}/flask-application|g" helm/mychart/values.yaml
             sed -i "s|^\([[:space:]]*tag:\).*|\1 ${{ github.sha }}|g" helm/mychart/values.yaml
             sed -i "s|^\([[:space:]]*pullPolicy:\).*|\1 IfNotPresent|g" helm/mychart/values.yaml
-            grep -A 3 '^image:' helm/mychart/values.yaml 
+            head -n 15 helm/mychart/values.yaml 
 
 
 
