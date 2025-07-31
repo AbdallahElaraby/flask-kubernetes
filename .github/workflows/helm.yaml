@@ -82,7 +82,7 @@ jobs:
       run: |
             head -n 15 helm/mychart/values.yaml 
             sed -i "s|^\([[:space:]]*repository:\).*|\1 ${CONTAINER_REGISTRY}/${DOCKER_USERNAME}/flask-application|g" helm/mychart/values.yaml
-            sed -i "s|^\([[:space:]]*tag:\).*|\1 ${{ github.sha }}|g" helm/mychart/values.yaml
+            sed -i "s|^\([[:space:]]*tag:\).*|\1 AbdallahElaraby-${{ github.sha }}|g" helm/mychart/values.yaml
             sed -i "s|^\([[:space:]]*pullPolicy:\).*|\1 IfNotPresent|g" helm/mychart/values.yaml
             head -n 15 helm/mychart/values.yaml 
 
@@ -90,27 +90,27 @@ jobs:
 
 
 
-    # - name: Deploy manifests
-    #   run: kubectl apply -f kubernetes/development
-    #   env:
-    #     KUBECONFIG: ./kubernetes/ifconfig.yaml
-    # - name: Fetch Kubernetes Cluster Details after deployment
-    #   run: |
+    - name: Deploy manifests
+      run: helm install mychart ./helm/mychart
+      env:
+        KUBECONFIG: ./kubernetes/ifconfig.yaml
+    - name: Fetch Kubernetes Cluster Details after deployment
+      run: |
             
-    #         echo "-----------------------------------------"
-    #         kubectl get pods --namespace ${{ vars.NAMESPACE }}
-    #         kubectl get services --namespace ${{ vars.NAMESPACE }}
-    #         kubectl get deployments --namespace ${{ vars.NAMESPACE }} 
+            echo "-----------------------------------------"
+            kubectl get pods --namespace ${{ vars.NAMESPACE }}
+            kubectl get services --namespace ${{ vars.NAMESPACE }}
+            kubectl get deployments --namespace ${{ vars.NAMESPACE }} 
 
-    #   env:
-    #     KUBECONFIG: ./kubernetes/ifconfig.yaml
-    # - name: Fetch Kubernetes Cluster Details after deployment
-    #   run: |
-    #         sleep 20
-    #         echo "-----------------------------------------"
-    #         kubectl get pods --namespace ${{ vars.NAMESPACE }}
-    #         kubectl get services --namespace ${{ vars.NAMESPACE }}
-    #         kubectl get deployments --namespace ${{ vars.NAMESPACE }}
-    #         kubectl logs --namespace ${{ vars.NAMESPACE }} solar-system-7df8f85dd5-hpmgb 
-    #   env:
-    #     KUBECONFIG: ./kubernetes/ifconfig.yaml
+      env:
+        KUBECONFIG: ./kubernetes/ifconfig.yaml
+    - name: Fetch Kubernetes Cluster Details after deployment
+      run: |
+            sleep 20
+            echo "-----------------------------------------"
+            kubectl get pods --namespace ${{ vars.NAMESPACE }}
+            kubectl get services --namespace ${{ vars.NAMESPACE }}
+            kubectl get deployments --namespace ${{ vars.NAMESPACE }}
+            kubectl logs --namespace ${{ vars.NAMESPACE }} solar-system-7df8f85dd5-hpmgb 
+      env:
+        KUBECONFIG: ./kubernetes/ifconfig.yaml
