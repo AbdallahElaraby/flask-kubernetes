@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+  {{- if .Values.labelsenable }}
+  labels:
+    app: {{Values.mylabel}}
+  {{- end }}
+  namespace: AbdallahElarabyhelm
+spec:
+  replicas: {{.Values.replicaCount}}
+  {{- if .Values.labelsenable }}
+  selector:
+    matchLabels:
+      app: {{Values.mylabel}}
+  {{- end }}
+  template:
+    metadata:
+    {{- if .Values.labelsenable }}
+      labels:
+        app: {{Values.mylabel}}
+  {{- end }}
+    spec:
+      containers:
+      - name: flask-app
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+        ports:
+        - containerPort: 5000
+        imagePullSecrets:
+        - name: acr-cred

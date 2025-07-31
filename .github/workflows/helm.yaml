@@ -1,0 +1,127 @@
+name: flask-kubernetes
+
+
+on:
+  workflow_dispatch:
+
+env:
+  CONTAINER_REGISTRY: "${{vars.CONTAINER_REGISTERY }}"
+  DOCKER_USERNAME: "${{ vars.DOCKER_USERNAME }}"
+  IMAGE_NAME: flask-application
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Docker Build
+        run: docker build -t $CONTAINER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:AbdallahElaraby-${{ github.sha }} .
+
+      - name: Docker Login
+        run: echo "${{ secrets.PASSWORD }}" | docker login $CONTAINER_REGISTRY -u "$DOCKER_USERNAME" --password-stdin
+
+      - name: Docker Push
+        run: docker push $CONTAINER_REGISTRY/$DOCKER_USERNAME/$IMAGE_NAME:AbdallahElaraby-${{ github.sha }}
+
+
+
+  dev-deploy:
+    name: Deploy to Dev Env
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install kubectl CLI
+      uses: azure/setup-kubectl@v3
+      with:
+            version: 'latest'
+
+    # - name: Set Kubeconfig Context
+    #   uses: azure/k8s-set-context@v4.0.1
+    #   with:
+    #     method: kubeconfig
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+      
+    - name: Set up Kubeconfig
+      run: kubectl get nodes
+      env:
+        KUBECONFIG: ./kubernetes/ifconfig.yaml
+
+
+    - name: Fetch Kubernetes Cluster Details
+      run: |
+            kubectl version --client
+            echo "-----------------------------------------"
+            kubectl get nodes
+            kubectl get namespaces
+            kubectl create namespace ${{ vars.NAMESPACE }}
+      env:
+        KUBECONFIG: ./kubernetes/ifconfig.yaml
+
+
+# - name: Replace tokens in manifests (all YAMLs)
+#   run: |
+#     for file in kubernetes/development/*.yaml; do
+#       echo "Processing $file"
+#       envsubst < "$file" > "tmp.yaml" && mv "tmp.yaml" "$file"
+#     done
+#   shell: bash
+#   env:
+#     NAMESPACE: ${{ vars.NAMESPACE }}
+#     REPLICAS: ${{ vars.REPLICAS }}
+#     IMAGE: ${{ vars.CONTAINER_REGISTERY }}/${{ vars.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:AbdallahElaraby-${{ github.sha }}
+    - name: update helm tag
+      shell: bash
+      run: |
+          sed -i "s|^\([[:space:]]*repository:\).*|\1 ${CONTAINER_REGISTRY}/${DOCKER_USERNAME}/${flask-application}|g" helm/mychart/values.yaml
+          sed -i "s|^\([[:space:]]*tag:\).*|\1 ${{ github.sha }}|g" helm/mychart/values.yaml
+          sed -i "s|^\([[:space:]]*pullPolicy:\).*|\1 IfNotPresent|g" helm/mychart/values.yaml
+
+
+
+    - name: Show processed manifests
+      run: cat kubernetes/development/*.yaml
+
+
+    - name: Create MongoDB secret
+      run: |
+            kubectl create secret generic mongo-db-creds \
+            --namespace ${{ vars.NAMESPACE }} \
+            --from-literal=MONGO_URI="${{ env.MONGO_URI }}" \
+            --from-literal=MONGO_USERNAME="${{ env.MONGO_USERNAME }}" \
+            --from-literal=MONGO_PASSWORD="${{ env.MONGO_PASSWORD }}" \
+            --save-config --dry-run=client -o yaml | kubectl apply -f -
+      env:
+        KUBECONFIG: ./kubernetes/ifconfig.yaml
+
+
+    # - name: Deploy manifests
+    #   run: kubectl apply -f kubernetes/development
+    #   env:
+    #     KUBECONFIG: ./kubernetes/ifconfig.yaml
+    - name: Fetch Kubernetes Cluster Details after deployment
+      run: |
+            
+            echo "-----------------------------------------"
+            kubectl get pods --namespace ${{ vars.NAMESPACE }}
+            kubectl get services --namespace ${{ vars.NAMESPACE }}
+            kubectl get deployments --namespace ${{ vars.NAMESPACE }} 
+
+      env:
+        KUBECONFIG: ./kubernetes/ifconfig.yaml
+    - name: Fetch Kubernetes Cluster Details after deployment
+      run: |
+            sleep 20
+            echo "-----------------------------------------"
+            kubectl get pods --namespace ${{ vars.NAMESPACE }}
+            kubectl get services --namespace ${{ vars.NAMESPACE }}
+            kubectl get deployments --namespace ${{ vars.NAMESPACE }}
+            kubectl logs --namespace ${{ vars.NAMESPACE }} solar-system-7df8f85dd5-hpmgb 
+
+      env:
+        KUBECONFIG: ./kubernetes/ifconfig.yaml
