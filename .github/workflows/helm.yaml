@@ -90,8 +90,8 @@ jobs:
 
 
 
-    - name: Deploy manifests
-      run: helm upgrade --install mychart ./helm/mychart
+    # - name: Deploy manifests
+    #   run: helm upgrade --install mychart ./helm/mychart
       env:
         KUBECONFIG: ./k8s/ifconfig.yaml
     - name: Fetch Kubernetes Cluster Details after deployment
@@ -106,13 +106,17 @@ jobs:
       env:
         KUBECONFIG: ./k8s/ifconfig.yaml
     - name: Fetch Kubernetes Cluster Details after deployment
+      
       run: |
             sleep 20
             echo "-----------------------------------------"
             kubectl get pods --namespace ${{ vars.NAMESPACE }}
             kubectl get services --namespace ${{ vars.NAMESPACE }}
             kubectl get deployments --namespace ${{ vars.NAMESPACE }}
-            #kubectl logs --namespace ${{ vars.NAMESPACE }} flask-app-6c47794466-znpzr
-            #kubectl describe pod --namespace ${{ vars.NAMESPACE }} flask-app-6c47794466-znpzr
+            kubectl logs --namespace ${{ vars.NAMESPACE }} flask-app-569679f5c7-dd8x9
+            kubectl describe pod --namespace ${{ vars.NAMESPACE }} flask-app-569679f5c7-dd8x9
+            curl http://10.0.91.49:5000
+            curl http://10.224.0.5:30089
+      continue-on-error: true
       env:
         KUBECONFIG: ./k8s/ifconfig.yaml
