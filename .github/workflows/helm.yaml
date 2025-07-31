@@ -42,16 +42,17 @@ jobs:
       with:
             version: 'latest'
 
-    # - name: Set Kubeconfig Context
-    #   uses: azure/k8s-set-context@v4.0.1
-    #   with:
-    #     method: kubeconfig
-    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+    - name: Set Kubeconfig Context
+      uses: azure/k8s-set-context@v4.0.1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBECONFIG }}
       
     - name: Set up Kubeconfig
       run: kubectl get nodes
-      env:
-        KUBECONFIG: ./k8s/ifconfig.yaml
+    #   with:
+    #     method: kubeconfig
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
 
 
     - name: Fetch Kubernetes Cluster Details
