@@ -4,11 +4,11 @@ metadata:
   name: flask-app-service
   namespace: abdallahelarabyhelm
 spec:
-  type: LoadBalancer
+  type:  NodePort
   {{- if .Values.labelsenable }}
   selector:
     app: {{.Values.mylabel}}
   {{- end }}
   ports:
   - port: 5000
-    targetPort: 5000
+    nodePort: 30089
