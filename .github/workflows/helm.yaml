@@ -50,9 +50,6 @@ jobs:
       
     - name: Set up Kubeconfig
       run: kubectl get nodes
-    #   with:
-    #     method: kubeconfig
-    #     kubeconfig: ${{ secrets.KUBECONFIG }}
 
 
     - name: Fetch Kubernetes Cluster Details
@@ -63,8 +60,7 @@ jobs:
             kubectl get nodes
             kubectl get namespaces
 #kubectl create namespace ${{ vars.NAMESPACE }}
-      env:
-        KUBECONFIG: ./k8s/ifconfig.yaml
+
 
 
 # - name: Replace tokens in manifests (all YAMLs)
@@ -93,8 +89,6 @@ jobs:
 
     # - name: Deploy manifests
     #   run: helm upgrade --install mychart ./helm/mychart
-      env:
-        KUBECONFIG: ./k8s/ifconfig.yaml
     - name: Fetch Kubernetes Cluster Details after deployment
       run: |
             
@@ -104,8 +98,6 @@ jobs:
             kubectl get deployments --namespace ${{ vars.NAMESPACE }} 
             kubectl get nodes -o wide
 
-      env:
-        KUBECONFIG: ./k8s/ifconfig.yaml
     - name: Fetch Kubernetes Cluster Details after deployment
       
       run: |
@@ -119,6 +111,5 @@ jobs:
             kubectl port-forward svc/flask-app-service 5000:5000 --namespace ${{ vars.NAMESPACE }} &
             sleep 5
             curl http://localhost:5000
-      continue-on-error: true
-      env:
-        KUBECONFIG: ./k8s/ifconfig.yaml
+      
+      
