@@ -93,7 +93,7 @@ jobs:
     - name: Deploy manifests
       run: helm install mychart ./helm/mychart
       env:
-        KUBECONFIG: ./kubernetes/ifconfig.yaml
+        KUBECONFIG: ./k8s/ifconfig.yaml
     - name: Fetch Kubernetes Cluster Details after deployment
       run: |
             
@@ -103,7 +103,7 @@ jobs:
             kubectl get deployments --namespace ${{ vars.NAMESPACE }} 
 
       env:
-        KUBECONFIG: ./kubernetes/ifconfig.yaml
+        KUBECONFIG: ./k8s/ifconfig.yaml
     - name: Fetch Kubernetes Cluster Details after deployment
       run: |
             sleep 20
@@ -113,4 +113,4 @@ jobs:
             kubectl get deployments --namespace ${{ vars.NAMESPACE }}
             kubectl logs --namespace ${{ vars.NAMESPACE }} solar-system-7df8f85dd5-hpmgb 
       env:
-        KUBECONFIG: ./kubernetes/ifconfig.yaml
+        KUBECONFIG: ./k8s/ifconfig.yaml
