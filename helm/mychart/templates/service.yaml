@@ -7,7 +7,7 @@ spec:
   type: LoadBalancer
   {{- if .Values.labelsenable }}
   selector:
-    app: {{Values.mylabel}}
+    app: {{.Values.mylabel}}
   {{- end }}
   ports:
   - port: 5000

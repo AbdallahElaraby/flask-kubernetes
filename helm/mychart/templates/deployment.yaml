@@ -4,7 +4,7 @@ metadata:
   name: flask-app
   {{- if .Values.labelsenable }}
   labels:
-    app: {{Values.mylabel}}
+    app: {{.Values.mylabel}}
   {{- end }}
   namespace: AbdallahElarabyhelm
 spec:
@@ -12,13 +12,13 @@ spec:
   {{- if .Values.labelsenable }}
   selector:
     matchLabels:
-      app: {{Values.mylabel}}
+      app: {.{Values.mylabel}}
   {{- end }}
   template:
     metadata:
     {{- if .Values.labelsenable }}
       labels:
-        app: {{Values.mylabel}}
+        app: {{.Values.mylabel}}
   {{- end }}
     spec:
       containers:
