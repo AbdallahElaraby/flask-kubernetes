@@ -1,8 +1,9 @@
 name: flask-kubernetes
 
-
 on:
-  workflow_dispatch:
+  push:
+    branches:
+        - master
 
 env:
   CONTAINER_REGISTRY: "${{vars.CONTAINER_REGISTERY }}"
