@@ -111,6 +111,7 @@ jobs:
             kubectl get pods --namespace ${{ vars.NAMESPACE }}
             kubectl get services --namespace ${{ vars.NAMESPACE }}
             kubectl get deployments --namespace ${{ vars.NAMESPACE }}
-            kubectl logs --namespace ${{ vars.NAMESPACE }} solar-system-7df8f85dd5-hpmgb 
+            kubectl logs --namespace ${{ vars.NAMESPACE }} flask-app-67fbc84578-txr8
+            kubectl describe pod --namespace ${{ vars.NAMESPACE }} flask-app-67fbc84578-txr8
       env:
         KUBECONFIG: ./k8s/ifconfig.yaml
